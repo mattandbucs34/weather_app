@@ -1,0 +1,1 @@
+open_weather_api = "079b756fa8529c8d2dc9f144db5538e0";
