@@ -105,7 +105,8 @@ body {
   width: 3rem;
 }
 
-button:focus {
+button:focus,
+#multi-city div:focus {
   outline: none;
 }
 
