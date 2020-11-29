@@ -47,9 +47,9 @@ const getDefaultLocation = async () => {
 const getLocalWeather = async (latitude, longitude) => {
   let localWeatherData;
   if(latitude, longitude) {
-    localWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${key.open_weather_api}&units=imperial`);
+    localWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${open_weather_api}&units=imperial`);
   }else{
-    localWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${key.open_weather_api}&units=imperial`)
+    localWeatherData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${open_weather_api}&units=imperial`)
 
   }
   return await localWeatherData.json();
@@ -64,12 +64,12 @@ const getMultiLocation = async () => {
 }
 
 const fetchCity = async (city) => {
-  const cityData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key.open_weather_api}&units=imperial`);
+  const cityData = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${open_weather_api}&units=imperial`);
   return await cityData.json();
 }
 
 const fetchOneCall = async (lat, long) => {
-  const oneCallData = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&appid=${key.open_weather_api}&units=imperial`);
+  const oneCallData = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${long}&appid=${open_weather_api}&units=imperial`);
   return await oneCallData.json();
 }
 
