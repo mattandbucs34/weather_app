@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css" type="text/css">
+  
+  <title>OpenWeather App</title>
+</head>
+<body id="body">
+  <div class="container">
+    <div id="header">
+      <!-- search and popular locations -->
+      <div id="search-container">
+        <!-- search -->
+        <label for="search">Enter Location:
+          <div id="search-container-input">
+            <input type="text" id="search" onchange="updateLocation(event)" onkeyup="searchLocation(event)" tabindex="0">
+            <button onclick="searchLocation(event)">Search</button>
+          </div>
+        </label>
+      </div>
+      <div id="multi-city">
+        <!-- popular locations -->
+      </div>
+    </div>
+
+    <div id="weather-main">
+      <!-- current weather info -->
+      <h2 id="city-header">Weather for </h2>
+      <div id="current-weather">
+        <div id="main-temp">
+        </div>
+        <div id="main-temp-icon"></div>
+        <div id="main-grid">
+          <div id="high-today">
+            <span>Today's High:</span>
+            <div></div>
+          </div>
+          <div id="feels-like">
+            <span>Feels Like:</span>
+            <div></div>
+          </div>
+          <div id="low-today">
+            <span>Today's Low:</span>
+            <div></div>
+          </div>
+          <div id="humidity">
+            <span>Humidity:</span>
+            <div></div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </div>
+    <div id="forecast">
+      <!-- forecast -->
+    </div>
+  </div>
+  <script src="./key.js"></script>
+  <script src="./openweather.js"></script>
+</body>
+</html>
