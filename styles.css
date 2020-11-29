@@ -1,4 +1,4 @@
-#search-container button, .forecast-date,
+#search-container button, #multi-city, .forecast-date,
 .forecast-high,
 .forecast-icon,
 .forecast-low {
@@ -110,15 +110,16 @@ button:focus {
 }
 
 #multi-city {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
   overflow-x: auto;
 }
 
 #multi-city div {
   width: 8rem;
   color: #283D55;
+}
+
+#multi-city div:hover {
+  cursor: pointer;
 }
 
 #current-weather {

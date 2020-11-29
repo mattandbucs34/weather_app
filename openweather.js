@@ -8,15 +8,26 @@ let searchedLocation = '';
 let allLocalWeatherData;
 let localWeatherData;
 
+let storedLocalWeather = JSON.parse(sessionStorage.getItem("storedLocalWeather"));
+let storedAllLocalWeatherData = JSON.parse(sessionStorage.getItem("storedAllLocalWeatherData"));
+let multiCityWeatherData = JSON.parse(sessionStorage.getItem("multiCityWeatherData"));
+
 let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
 const main = async () => {
-  let coords = await getDefaultLocation();
-  localWeatherData = await getLocalWeather(coords.latitude, coords.longitude);
-  allLocalWeatherData = await fetchOneCall(coords.latitude, coords.longitude);
-  multiCityWeather = await getMultiLocation();
-  console.log(multiCityWeather);
-  displayMultiCity();
+  if(!storedLocalWeather || !allLocalWeatherData) {
+    let coords = await getDefaultLocation();
+    localWeatherData = await getLocalWeather(coords.latitude, coords.longitude);
+    allLocalWeatherData = await fetchOneCall(coords.latitude, coords.longitude);
+    sessionStorage.setItem("storedLocalWeather", JSON.stringify(localWeatherData));
+    sessionStorage.setItem("storedAllLocalWeatherData", JSON.stringify(allLocalWeatherData));
+  }
+
+  if(!multiCityWeatherData) {
+    multiCityWeather = await getMultiLocation();
+    sessionStorage.setItem("multiCityWeatherData", JSON.stringify(multiCityWeather));
+  }
+  displayMultiCity(multiCityWeatherData);
   displayCityHeader(localWeatherData);
   displayMainTemp(localWeatherData, allLocalWeatherData);
   displayFirstFive(allLocalWeatherData);
@@ -30,7 +41,7 @@ const getDefaultLocation = async () => {
       newCoords.longitude = position.coords.longitude;
     })
   }
-  return await newCoords;
+  return newCoords;
 }
 
 const getLocalWeather = async (latitude, longitude) => {
@@ -66,34 +77,35 @@ const updateLocation = (e) => {
   searchedLocation = e.target.value;
 }
 
-const searchLocation = async (e) => {
-  console.log(e);
-  if(e.type === "click" || e.key === "Enter")
-  try {
-    console.log(searchedLocation);
-    const data = await fetchCity(encodeURI(searchedLocation));
+const getNewCity = async (e, city) => {
+  if(e.type === "click" || e.key === "Enter") {
+    const data = await fetchCity(encodeURI(!city ? searchedLocation : city));
+    const oneCallData = await fetchOneCall(data.coord.lat, data.coord.lon);
     if(data.cod === "404" || data.cod === 404 || data.cod === "400" || data.cod === 400) {
       return data.message;
     }else {
       searchedLocation = "";
       search.value = "";
-      return data;
+      localWeatherData = await data;
+      allLocalWeatherData = await oneCallData;
+      displayCityHeader(localWeatherData);
+      displayMainTemp(localWeatherData, allLocalWeatherData);
+      displayFirstFive(allLocalWeatherData);
     }
-  }catch(e) {
-    console.log(`Error: ${e}`);
   }
 }
 
-const displayMultiCity = () => {
+const displayMultiCity = (multiCityWeatherData) => {
   const parent = document.querySelector("#multi-city");
+  parent.innerHTML = '';
   multiCity.forEach((city, index) => {
     parent.innerHTML += 
-      `<div>
+      `<div onclick="getNewCity(event, '${city}')" tabindex="${index + 2}">
         <div class='mc-city'>${city}</div>
-        <img src="http://openweathermap.org/img/wn/${multiCityWeather[index].daily[0].weather[0].icon}.png" alt="${multiCityWeather[index].daily[0].weather[0].description}" />
+        <img src="http://openweathermap.org/img/wn/${multiCityWeatherData[index].daily[0].weather[0].icon}.png" alt="${multiCityWeatherData[index].daily[0].weather[0].description}" />
         <div>
-          <div class='mc-high-temp'>High: ${Math.round(multiCityWeather[index].daily[0].temp.max)}</div>
-          <div class='mc-low-temp'>Low: ${Math.round(multiCityWeather[index].daily[0].temp.min)}</div>
+          <div class='mc-high-temp'>High: ${Math.round(multiCityWeatherData[index].daily[0].temp.max)}</div>
+          <div class='mc-low-temp'>Low: ${Math.round(multiCityWeatherData[index].daily[0].temp.min)}</div>
         </div>
       </div>`
   })
@@ -105,7 +117,6 @@ const displayCityHeader = (localWeatherData) => {
 }
 
 const displayMainTemp = (currentLocationData, allLocalData) => {
-  console.log(allLocalData);
   document.querySelector("#main-temp").innerHTML = `${Math.round(currentLocationData.main.temp)}&#176`;
   document.querySelector("#main-temp-icon").innerHTML = `<img src="http://openweathermap.org/img/wn/${allLocalData.current.weather[0].icon}@4x.png" alt=${allLocalData.current.weather[0].description} />`
   document.querySelector("#high-today div").innerHTML = `${Math.round(allLocalData.daily[0].temp.max)}&#176`;
@@ -116,9 +127,9 @@ const displayMainTemp = (currentLocationData, allLocalData) => {
 
 const displayFirstFive = (allLocalData) => {
   const parent = document.querySelector("#forecast");
+  parent.innerHTML = '';
   allLocalData.daily.forEach((day, index) => {
     if(index > 0 && index < 6) {
-      console.log(day);
       const newdt = day.dt * 1000;
       const dayOfWeek = days[new Date(newdt).getDay()];
       const currDate = new Date(newdt).getDate();
@@ -163,10 +174,6 @@ const validateMinutes = (minutes) => {
   const mins = new Date(minutes).getMinutes();
   const adjusted = mins > 9 ? mins : `0${mins}`;
   return adjusted;
-}
-
-const displaySecondFive = () => {
-
 }
 
 main();

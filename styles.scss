@@ -96,13 +96,17 @@ button:focus {
 }
 
 #multi-city {
-  display: $flex-display;
+  @extend %center-display;
   overflow-x: auto;
 }
 
 #multi-city div{
   width: 8rem;
   color: $background-hex;
+}
+
+#multi-city div:hover {
+  cursor: pointer;
 }
 
 #current-weather {

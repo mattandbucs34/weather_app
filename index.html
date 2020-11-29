@@ -15,8 +15,8 @@
         <!-- search -->
         <label for="search">Enter Location:
           <div id="search-container-input">
-            <input type="text" id="search" onchange="updateLocation(event)" onkeyup="searchLocation(event)" tabindex="0">
-            <button onclick="searchLocation(event)">Search</button>
+            <input type="text" id="search" onchange="updateLocation(event)" onkeyup="getNewCity(event)" tabindex="0">
+            <button onclick="getNewCity(event)" tabindex="1">Search</button>
           </div>
         </label>
       </div>
@@ -27,7 +27,7 @@
 
     <div id="weather-main">
       <!-- current weather info -->
-      <h2 id="city-header">Weather for </h2>
+      <h2 id="city-header"></h2>
       <div id="current-weather">
         <div id="main-temp">
         </div>
