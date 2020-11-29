@@ -15,22 +15,30 @@ let multiCityWeatherData = JSON.parse(sessionStorage.getItem("multiCityWeatherDa
 let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
 const main = async () => {
+  await createLocalValues();
+  await createMultiCityValues();
+  // displayMultiCity(multiCityWeatherData);
+}
+
+const createLocalValues = async () => {
   if(!storedLocalWeather || !allLocalWeatherData) {
     let coords = await getDefaultLocation();
     localWeatherData = await getLocalWeather(coords.latitude, coords.longitude);
     allLocalWeatherData = await fetchOneCall(coords.latitude, coords.longitude);
     sessionStorage.setItem("storedLocalWeather", JSON.stringify(localWeatherData));
     sessionStorage.setItem("storedAllLocalWeatherData", JSON.stringify(allLocalWeatherData));
+    displayCityHeader(localWeatherData);
+    displayMainTemp(localWeatherData, allLocalWeatherData);
+    displayFirstFive(allLocalWeatherData);
   }
+}
 
+const createMultiCityValues = async () => {
   if(!multiCityWeatherData) {
     multiCityWeather = await getMultiLocation();
     sessionStorage.setItem("multiCityWeatherData", JSON.stringify(multiCityWeather));
+    displayMultiCity(multiCityWeather);
   }
-  displayMultiCity(multiCityWeatherData);
-  displayCityHeader(localWeatherData);
-  displayMainTemp(localWeatherData, allLocalWeatherData);
-  displayFirstFive(allLocalWeatherData);
 }
 
 const getDefaultLocation = async () => {
@@ -175,5 +183,6 @@ const validateMinutes = (minutes) => {
   const adjusted = mins > 9 ? mins : `0${mins}`;
   return adjusted;
 }
+
 
 main();
